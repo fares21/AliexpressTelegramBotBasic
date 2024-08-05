@@ -8,6 +8,7 @@ import re
 import os
 from urllib.parse import urlparse, parse_qs
 import urllib.parse
+import requests
 
 # Initialize the bot with the token
 # TOKEN = os.getenv('TELEGRAM_BOT_TOKEN', '7203070953:AAHTg1OwfXo3koUeO_IsHRjnvXsAcjYaY9w')
@@ -16,7 +17,7 @@ bot = telebot.TeleBot('7203070953:AAHTg1OwfXo3koUeO_IsHRjnvXsAcjYaY9w')
 # Initialize Aliexpress API
 try:
     aliexpress = AliexpressApi('508800', 'TK2sfsvmmxQ89nS4oV9i7AX8OJM8XEH6',
-                               models.Language.EN, models.Currency.EUR, 'telegramBot')
+                               models.Language.AR, models.Currency.EUR, 'telegramBot')
     print("AliExpress API initialized successfully.")
 except Exception as e:
     print(f"Error initializing AliExpress API: {e}")
@@ -25,7 +26,7 @@ except Exception as e:
 keyboardStart = types.InlineKeyboardMarkup(row_width=1)
 btn1 = types.InlineKeyboardButton("⭐️ألعاب لجمع العملات المعدنية⭐️", callback_data="games")
 btn2 = types.InlineKeyboardButton("⭐️تخفيض العملات على منتجات السلة 🛒⭐️", callback_data='click')
-btn3 = types.InlineKeyboardButton("❤️ اشترك في القناة للمزيد من العروض ❤️", url="t.me/ShopAliExpressMaroc")
+btn3 = types.InlineKeyboardButton("❤️ اشترك في القناة للمزيد من العروض ❤️", url="https://t.me/AliExpressSaverBot")
 btn4 = types.InlineKeyboardButton("🎬 شاهد كيفية عمل البوت 🎬", url="https://t.me/AliExpressSaverBot/8")
 btn5 = types.InlineKeyboardButton("💰 حمل تطبيق Aliexpress عبر الضغط هنا للحصول على مكافأة 5 دولار 💰", url="https://a.aliexpress.com/_mtV0j3q")
 keyboardStart.add(btn1, btn2, btn3, btn4, btn5)
@@ -44,6 +45,16 @@ btn4 = types.InlineKeyboardButton("⭐️ لعبة قلب الاوراق Flip �
 btn5 = types.InlineKeyboardButton("⭐️ لعبة GoGo Match ⭐️", url="https://s.click.aliexpress.com/e/_DDs7W5D")
 keyboard_games.add(btn1, btn2, btn3, btn4, btn5)
 
+# Define function to get exchange rate from USD to MAD
+def get_usd_to_mad_rate():
+    try:
+        response = requests.get('https://api.exchangerate-api.com/v4/latest/USD')
+        data = response.json()
+        return data['rates']['MAD']
+    except Exception as e:
+        print(f"Error fetching exchange rate: {e}")
+        return None
+    
 # Define bot handlers
 @bot.message_handler(commands=['start'])
 def welcome_user(message):
@@ -103,9 +114,15 @@ def get_affiliate_links(message, message_id, link):
                 '1000006468625',
                 f'https://star.aliexpress.com/share/share.htm?platform=AE&businessType=ProductDetail&redirectUrl={link}'
             ])
-            price_pro = img_link[0].target_sale_price
+            price_pro = float(img_link[0].target_sale_price)
             title_link = img_link[0].product_title
             img_link = img_link[0].product_main_image_url
+            # Convert price to MAD
+            exchange_rate = get_usd_to_mad_rate()
+            if exchange_rate:
+                price_pro_mad = price_pro * exchange_rate
+            else:
+                price_pro_mad = price_pro  # fallback to USD if exchange rate not available
             print(f"Product details: {title_link}, {price_pro}, {img_link}")
             bot.delete_message(message.chat.id, message_id)
             bot.send_photo(message.chat.id,
@@ -113,7 +130,7 @@ def get_affiliate_links(message, message_id, link):
                            caption=" \n🛒 منتجك هو : 🔥 \n"
                                    f" {title_link} 🛍 \n"
                                    f" سعر المنتج : "
-                                   f" {price_pro} دولار 💵\n"
+                                   f" {price_pro:.2f} دولار 💵 / {price_pro_mad:.2f} درهم مغربي 💵\n"
                                    " \n قارن بين الاسعار واشتري 🔥 \n"
                                    "💰 عرض العملات (السعر النهائي عند الدفع) : \n"
                                    f"الرابط {affiliate_link} \n"
@@ -161,7 +178,7 @@ def get_affiliate_shopcart_link(link, message):
         shopcart_link = build_shopcart_link(link)
         affiliate_link = aliexpress.get_affiliate_links(shopcart_link)[0].promotion_link
         text2 = f"هذا رابط تخفيض السلة \n{str(affiliate_link)}"
-        img_link3 = "https://picsum.photos/200/300"
+        img_link3 = "https://i.postimg.cc/1Xrk1RJP/Copy-of-Basket-aliexpress-telegram.png"
         bot.send_photo(message.chat.id, img_link3, caption=text2)
     except Exception as e:
         print(f"Error in get_affiliate_shopcart_link: {e}")
@@ -172,7 +189,7 @@ def handle_callback_query(call):
     try:
         print(f"Callback query received: {call.data}")
         bot.send_message(call.message.chat.id, "..")
-        img_link2 = "https://i.postimg.cc/zvDbVTS0/photo-5893070682508606110-x.jpg"
+        img_link2 = "https://i.postimg.cc/VvmhgQ1h/Basket-aliexpress-telegram.png"
         bot.send_photo(call.message.chat.id,
                        img_link2,
                        caption="روابط ألعاب جمع العملات المعدنية لإستعمالها في خفض السعر لبعض المنتجات، قم بالدخول يوميا لها للحصول على أكبر عدد ممكن في اليوم 👇",
