@@ -11,12 +11,14 @@ import urllib.parse
 import requests
 
 # Initialize the bot with the token
-# TOKEN = os.getenv('TELEGRAM_BOT_TOKEN', '7203070953:AAHTg1OwfXo3koUeO_IsHRjnvXsAcjYaY9w')
-bot = telebot.TeleBot('7203070953:AAHTg1OwfXo3koUeO_IsHRjnvXsAcjYaY9w')
+TELEGRAM_TOKEN_BOT = os.getenv('TELEGRAM_BOT_TOKEN')
+ALIEXPRESS_API_PUBLIC = os.getenv('ALIEXPRESS_API_PUBLIC')
+ALIEXPRESS_API_SECRET = os.getenv('ALIEXPRESS_API_SECRET')
+bot = telebot.TeleBot(TELEGRAM_TOKEN_BOT)
 
 # Initialize Aliexpress API
 try:
-    aliexpress = AliexpressApi('508800', 'TK2sfsvmmxQ89nS4oV9i7AX8OJM8XEH6',
+    aliexpress = AliexpressApi(ALIEXPRESS_API_PUBLIC, ALIEXPRESS_API_SECRET,
                                models.Language.AR, models.Currency.EUR, 'telegramBot')
     print("AliExpress API initialized successfully.")
 except Exception as e:
@@ -24,17 +26,17 @@ except Exception as e:
 
 # Define keyboards
 keyboardStart = types.InlineKeyboardMarkup(row_width=1)
-btn1 = types.InlineKeyboardButton("⭐️ألعاب لجمع العملات المعدنية⭐️", callback_data="games")
+btn1 = types.InlineKeyboardButton("⭐️ صفحة مراجعة وجمع النقاط يوميا ⭐️", url="https://s.click.aliexpress.com/e/_DdwUZVd")
 btn2 = types.InlineKeyboardButton("⭐️تخفيض العملات على منتجات السلة 🛒⭐️", callback_data='click')
-btn3 = types.InlineKeyboardButton("❤️ اشترك في القناة للمزيد من العروض ❤️", url="https://t.me/AliExpressSaverBot")
-btn4 = types.InlineKeyboardButton("🎬 شاهد كيفية عمل البوت 🎬", url="https://t.me/AliExpressSaverBot/8")
+btn3 = types.InlineKeyboardButton("❤️ اشترك في القناة للمزيد من العروض ❤️", url="https://t.me/ShopAliExpressMaroc")
+btn4 = types.InlineKeyboardButton("🎬 شاهد كيفية عمل البوت 🎬", url="https://t.me/ShopAliExpressMaroc/9")
 btn5 = types.InlineKeyboardButton("💰 حمل تطبيق Aliexpress عبر الضغط هنا للحصول على مكافأة 5 دولار 💰", url="https://a.aliexpress.com/_mtV0j3q")
-keyboardStart.add(btn1, btn2, btn3, btn4, btn5)
+keyboardStart.add(btn1, btn2, btn3, btn4)
 
 keyboard = types.InlineKeyboardMarkup(row_width=1)
-btn1 = types.InlineKeyboardButton("⭐️ألعاب لجمع العملات المعدنية⭐️", callback_data="games")
+btn1 = types.InlineKeyboardButton("⭐️ صفحة مراجعة وجمع النقاط يوميا ⭐️", url="https://s.click.aliexpress.com/e/_DdwUZVd")
 btn2 = types.InlineKeyboardButton("⭐️تخفيض العملات على منتجات السلة 🛒⭐️", callback_data='click')
-btn3 = types.InlineKeyboardButton("❤️ اشترك في القناة للمزيد من العروض ❤️", url="https://t.me/AliExpressSaverBot")
+btn3 = types.InlineKeyboardButton("❤️ اشترك في القناة للمزيد من العروض ❤️", url="https://t.me/ShopAliExpressMaroc")
 keyboard.add(btn1, btn2, btn3)
 
 keyboard_games = types.InlineKeyboardMarkup(row_width=1)
@@ -54,14 +56,15 @@ def get_usd_to_mad_rate():
     except Exception as e:
         print(f"Error fetching exchange rate: {e}")
         return None
-    
+
 # Define bot handlers
 @bot.message_handler(commands=['start'])
 def welcome_user(message):
     print("Handling /start command")
     bot.send_message(
         message.chat.id,
-        "مرحبا بك، ارسل لنا رابط المنتج الذي تريد شرائه لنوفر لك افضل سعر له 👌 \n",
+        "مرحبا بكم👋 \n" 
+        "أنا علي إكسبريس بوت أقوم بتخفيض المنتجات و البحث  عن أفضل العروض إنسخ رابط المنتج وضعه هنا 👇 ستجد جميع عروض المنتج بثمن أقل 🔥",
         reply_markup=keyboardStart)
 
 @bot.message_handler(func=lambda message: True)
@@ -111,9 +114,11 @@ def get_affiliate_links(message, message_id, link):
 
         try:
             img_link = aliexpress.get_products_details([
-                '1000006468625',
+                '1005006678051682',
                 f'https://star.aliexpress.com/share/share.htm?platform=AE&businessType=ProductDetail&redirectUrl={link}'
             ])
+            # Print all details of img_link in JSON format
+            print(f"Product details object: {json.dumps(img_link[0].__dict__, indent=2, ensure_ascii=False)}")
             price_pro = float(img_link[0].target_sale_price)
             title_link = img_link[0].product_title
             img_link = img_link[0].product_main_image_url
@@ -136,7 +141,7 @@ def get_affiliate_links(message, message_id, link):
                                    f"الرابط {affiliate_link} \n"
                                    f"💎 عرض السوبر : \n"
                                    f"الرابط {super_links} \n"
-                                   f"♨️ عرض محدود : \n"
+                                   f"🔥 عرض محدود : \n"
                                    f"الرابط {limit_links} \n\n"
                                    "#AliExpressSaverBot ✅",
                            reply_markup=keyboard)
@@ -188,12 +193,17 @@ def get_affiliate_shopcart_link(link, message):
 def handle_callback_query(call):
     try:
         print(f"Callback query received: {call.data}")
-        bot.send_message(call.message.chat.id, "..")
-        img_link2 = "https://i.postimg.cc/VvmhgQ1h/Basket-aliexpress-telegram.png"
-        bot.send_photo(call.message.chat.id,
-                       img_link2,
-                       caption="روابط ألعاب جمع العملات المعدنية لإستعمالها في خفض السعر لبعض المنتجات، قم بالدخول يوميا لها للحصول على أكبر عدد ممكن في اليوم 👇",
-                       reply_markup=keyboard_games)
+        if call.data == 'click':
+            # Replace with your link and message if needed
+            link = 'https://www.aliexpress.com/p/shoppingcart/index.html?'
+            get_affiliate_shopcart_link(link, call.message)
+        else:
+            bot.send_message(call.message.chat.id, "..")
+            img_link2 = "https://i.postimg.cc/VvmhgQ1h/Basket-aliexpress-telegram.png"
+            bot.send_photo(call.message.chat.id,
+                           img_link2,
+                           caption="روابط ألعاب جمع العملات المعدنية لإستعمالها في خفض السعر لبعض المنتجات، قم بالدخول يوميا لها للحصول على أكبر عدد ممكن في اليوم 👇",
+                           reply_markup=keyboard_games)
     except Exception as e:
         print(f"Error in handle_callback_query: {e}")
 
@@ -216,4 +226,4 @@ def run_flask():
 if __name__ == "__main__":
     threading.Thread(target=run_flask).start()
     bot.remove_webhook()
-    bot.set_webhook(url='https://d14d-196-65-23-91.ngrok-free.app/webhook')
+    bot.set_webhook(url='https://bottelegramaliexpress.onrender.com/webhook')
