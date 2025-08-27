@@ -3,9 +3,10 @@
 
 Automatically search and share AliExpress products with affiliate links through Telegram!
 
-📱 **Created by [Your Name]**
-📺 **YouTube:** [Your YouTube Channel]
-📸 **Instagram:** [Your Instagram Handle]
+📱 **Created by Tech Mouad**
+📺 **YouTube:** https://www.youtube.com/@techmouad
+📸 **Instagram:** https://www.instagram.com/tech_mouad/
+☕ **Support:** https://buymeacoffee.com/techmouad
 **Subscribe for more automation tools! 🚀**
 
 ## 🎯 What It Does
@@ -186,13 +187,14 @@ AliexpressBot/
 Watch the complete setup tutorial on our YouTube channel!
 
 ## 💡 Need Help?
-- Check our YouTube channel for tutorials
-- Follow us on Instagram for updates
+- Check our YouTube channel for tutorials: [@techmouad](https://www.youtube.com/@techmouad)
+- Follow us on Instagram for updates: [@tech_mouad](https://www.instagram.com/tech_mouad/)
 - Create an issue on GitHub if you find bugs
+- Support the project: [Buy me a coffee ☕](https://buymeacoffee.com/techmouad)
 
 ---
 
-**Made with ❤️ by [Your Name]**  
-📺 **YouTube** | 📸 **Instagram**
+**Made with ❤️ by Tech Mouad**  
+📺 [**YouTube**](https://www.youtube.com/@techmouad) | 📸 [**Instagram**](https://www.instagram.com/tech_mouad/) | ☕ [**Buy me a coffee**](https://buymeacoffee.com/techmouad)
 
 *Star this repo if it helped you! ⭐*
