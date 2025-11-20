@@ -422,7 +422,7 @@ def webhook():
 def run_flask():
     app.run(host='0.0.0.0', port=5000)
 
-if __name__ == "__main__":
+#if __name__ == "__main__":
     # Check if we're running in production (webhook) or development (polling) mode
     webhook_url = os.getenv('WEBHOOK_URL')
     
