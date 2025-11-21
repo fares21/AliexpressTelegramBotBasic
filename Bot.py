@@ -264,14 +264,19 @@ def get_affiliate_shopcart_link(link: str, message):
 
 @bot.message_handler(commands=["start"])
 def welcome_user(message):
-    print("Handling /start command")
-    bot.send_message(
-        message.chat.id,
-        ("مرحبا بكم 👋\n"
-         "أنا علي إكسبريس بوت أقوم بتخفيض المنتجات والبحث عن أفضل العروض.\n"
-         "انسخ رابط المنتج وضعه هنا 👇 ستجد جميع عروض المنتج بثمن أقل 🔥"),
-        reply_markup=keyboardStart,
-    )
+    print(f"Received /start command from chat_id={message.chat.id}")
+    try:
+        bot.send_message(
+            message.chat.id,
+            ("مرحبا بكم 👋\n"
+            "أنا علي إكسبريس بوت أقوم بتخفيض المنتجات والبحث عن أفضل العروض.\n"
+            "انسخ رابط المنتج وضعه هنا 👇 ستجد جميع عروض المنتج بثمن أقل 🔥"),
+            reply_markup=keyboardStart,
+        )
+        print("Reply sent successfully")
+    except Exception as e:
+        print(f"Error sending start message: {e}")
+
 
 
 @bot.message_handler(func=lambda message: True)
