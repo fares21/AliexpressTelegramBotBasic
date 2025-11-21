@@ -249,11 +249,8 @@ def get_affiliate_shopcart_link(link: str, message):
     try:
         shopcart_link = build_shopcart_link(link)
         affiliate_link = aliexpress.get_affiliate_links(shopcart_link)[0].promotion_link
-        text2 = f"هذا رابط تخفيض السلة 
-{affiliate_link}"
-        img_link3 = (
-            "https://i.postimg.cc/1Xrk1RJP/Copy-of-Basket-aliexpress-telegram.png"
-        )
+        text2 = f"هذا رابط تخفيض السلة {affiliate_link}"
+        img_link3 = ("https://i.postimg.cc/1Xrk1RJP/Copy-of-Basket-aliexpress-telegram.png")
         bot.send_photo(message.chat.id, img_link3, caption=text2)
     except Exception as e:
         print(f"Error in get_affiliate_shopcart_link: {e}")
@@ -270,15 +267,7 @@ def welcome_user(message):
     print("Handling /start command")
     bot.send_message(
         message.chat.id,
-        (
-            "مرحبا بكم👋 
-"
-            "أنا علي إكسبريس بوت أقوم بتخفيض المنتجات و البحث عن أفضل العروض.
-"
-            "انسخ رابط المنتج وضعه هنا 👇 ستجد جميع عروض المنتج بثمن أقل 🔥"
-        ),
-        reply_markup=keyboardStart,
-    )
+        ( "مرحبا بكم👋""أنا علي إكسبريس بوت أقوم بتخفيض المنتجات و البحث عن أفضل العروض.""انسخ رابط المنتج وضعه هنا 👇 ستجد جميع عروض المنتج بثمن أقل 🔥"),reply_markup=keyboardStart,)
 
 
 @bot.message_handler(func=lambda message: True)
