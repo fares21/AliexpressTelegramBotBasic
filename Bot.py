@@ -294,8 +294,7 @@ def echo_all(message):
             bot.send_message(
                 message.chat.id,
                 (
-                    "الرابط غير صحيح! تأكد من رابط المنتج أو أعد المحاولة.
-"
+                    "الرابط غير صحيح! تأكد من رابط المنتج أو أعد المحاولة."
                     "قم بإرسال <b>الرابط فقط</b> بدون عنوان المنتج."
                 ),
             )
@@ -366,48 +365,32 @@ def get_affiliate_links(message, loading_msg_id: int, link: str):
                 price_mad = price_usd * rate if rate else price_usd
 
                 msg = (
-                    "
-🛒 منتجك هو : 🔥
-"
-                    f"{title} 🛍
-"
+                    "🛒 منتجك هو : 🔥"
+                    f"{title} 🛍"
                     "سعر المنتج : "
-                    f"{price_usd:.2f} دولار 💵 / {price_mad:.2f} درهم مغربي 💵
-
-"
-                    "قارن بين الأسعار واشتري 🔥
-"
+                    f"{price_usd:.2f} دولار 💵 / {price_mad:.2f} درهم مغربي 💵"
+                    "قارن بين الأسعار واشتري 🔥"
                 )
             else:
-                msg = "قارن بين الأسعار واشتري 🔥
-"
+                msg = "قارن بين الأسعار واشتري 🔥"
 
             if coin_affiliate_link:
                 msg += (
-                    "💰 عرض العملات (السعر النهائي عند الدفع):
-"
-                    f"{coin_affiliate_link}
-"
+                    "💰 عرض العملات (السعر النهائي عند الدفع):"
+                    f"{coin_affiliate_link}"
                 )
 
             if bundle_affiliate_link:
                 msg += (
-                    "📦 عرض الحزمة (عروض متنوعة):
-"
-                    f"{bundle_affiliate_link}
-"
+                    "📦 عرض الحزمة (عروض متنوعة):"
+                    f"{bundle_affiliate_link}"
                 )
 
             msg += (
-                "💎 عرض السوبر:
-"
-                f"{super_links}
-"
-                "🔥 عرض محدود:
-"
-                f"{limit_links}
-
-"
+                "💎 عرض السوبر:"
+                f"{super_links}"
+                "🔥 عرض محدود:"
+                f"{limit_links}"
                 "#AliExpressSaverBot ✅"
             )
 
@@ -420,32 +403,22 @@ def get_affiliate_links(message, loading_msg_id: int, link: str):
             print(f"Error in get_affiliate_links inner try: {e}")
             bot.delete_message(message.chat.id, loading_msg_id)
 
-            msg = "قارن بين الأسعار واشتري 🔥
-"
+            msg = "قارن بين الأسعار واشتري 🔥"
             if coin_affiliate_link:
                 msg += (
-                    "💰 عرض العملات (السعر النهائي عند الدفع):
-"
-                    f"{coin_affiliate_link}
-"
+                    "💰 عرض العملات (السعر النهائي عند الدفع):"
+                    f"{coin_affiliate_link}"
                 )
             if bundle_affiliate_link:
                 msg += (
-                    "📦 عرض الحزمة (عروض متنوعة):
-"
-                    f"{bundle_affiliate_link}
-"
+                    "📦 عرض الحزمة (عروض متنوعة):"
+                    f"{bundle_affiliate_link}"
                 )
             msg += (
-                "💎 عرض السوبر:
-"
-                f"{super_links}
-"
-                "🔥 عرض محدود:
-"
-                f"{limit_links}
-
-"
+                "💎 عرض السوبر:"
+                f"{super_links}"
+                "🔥 عرض محدود:"
+                f"{limit_links}"
                 "#AliExpressSaverBot ✅"
             )
             bot.send_message(message.chat.id, msg, reply_markup=keyboard)
