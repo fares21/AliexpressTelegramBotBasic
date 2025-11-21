@@ -410,44 +410,28 @@ def handle_callback_query(call):
 
 app = Flask(__name__)
 
+# Route الجذر للفحص وطلبات الكرون
+@app.route('/', methods=['GET'])
+def index():
+    return 'OK', 200
+
+# Route لضبط الويبهوك يدويًا بعد كل Deploy
+@app.route('/setwebhook', methods=['GET'])
+def set_webhook():
+    webhook_url = os.getenv('WEBHOOK_URL')
+    if not webhook_url:
+        return "WEBHOOK_URL not set", 500
+    try:
+        bot.remove_webhook()
+        bot.set_webhook(url=webhook_url)
+        return f"webhook set to {webhook_url}", 200
+    except Exception as e:
+        return f"error setting webhook: {e}", 500
+
+# Route يستقبل التحديثات من تيليجرام
 @app.route('/webhook', methods=['POST'])
 def webhook():
-    if request.method == 'POST':
-        json_str = request.get_data().decode('UTF-8')
-        update = telebot.types.Update.de_json(json_str)
-        bot.process_new_updates([update])
-        return 'OK', 200
-
-# Start Flask app in a separate thread
-def run_flask():
-    app.run(host='0.0.0.0', port=5000)
-
-#if __name__ == "__main__":
-    # Check if we're running in production (webhook) or development (polling) mode
-    webhook_url = os.getenv('WEBHOOK_URL')
-    
-    if webhook_url:
-        # Production mode: Use webhook
-        print("🚀 Starting bot in webhook mode...")
-        threading.Thread(target=run_flask).start()
-        try:
-            bot.remove_webhook()
-            bot.set_webhook(url=webhook_url)
-            print(f"✅ Webhook set to: {webhook_url}")
-        except Exception as e:
-            print(f"❌ Error setting webhook: {e}")
-    else:
-        # Development mode: Use polling
-        print("🚀 Starting bot in polling mode (development)...")
-        try:
-            # Remove any existing webhook first
-            bot.remove_webhook()
-            print("✅ Removed existing webhooks")
-            
-            # Start polling
-            print("🔄 Bot is running... Press Ctrl+C to stop.")
-            bot.infinity_polling(none_stop=True, timeout=10, long_polling_timeout=5)
-        except KeyboardInterrupt:
-            print("\n👋 Bot stopped by user.")
-        except Exception as e:
-            print(f"❌ Error in polling mode: {e}")
+    json_str = request.get_data().decode('UTF-8')
+    update = telebot.types.Update.de_json(json_str)
+    bot.process_new_updates([update])
+    return 'OK', 200
